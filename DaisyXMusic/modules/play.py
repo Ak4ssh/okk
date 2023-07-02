@@ -426,6 +426,8 @@ async def m_cb(chat, b, cb):
             await cb.answer("Chat is not connected!", show_alert=True)
 
 
+import time
+
 @Client.on_message(command("play") & other_filters)
 async def play(_, message: Message):
     global que
@@ -439,12 +441,17 @@ async def play(_, message: Message):
     try:
         user = await USER.get_me()
     except:
+        user = User()
         user.first_name = "helper"
     usar = user
     wew = usar.id
     try:
         # chatdetails = await USER.get_chat(chid)
         await _.get_chat_member(chid, wew)
+    except FloodWait as e:
+        wait_time = e.x
+        time.sleep(wait_time)  # Introduce a delay based on the wait time
+        await play(_, message)  # Retry the API call
     except:
         for administrator in administrators:
             if administrator == message.from_user.id:
